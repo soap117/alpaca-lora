@@ -28,7 +28,7 @@ def train(
     # model/data params
     base_model: str = "NousResearch/Llama-2-7b-chat-hf",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
-    output_dir: str = "./lora-alpaca",
+    output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
     batch_size: int = 16,
     micro_batch_size: int = 8,
