@@ -4,6 +4,7 @@ from typing import List
 
 import torch
 import transformers
+import wandb
 from datasets import load_dataset
 
 """
@@ -226,7 +227,8 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-
+    wandb.init(project=wandb_project, name=wandb_run_name)
+    wandb.watch(model, log="all")
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
