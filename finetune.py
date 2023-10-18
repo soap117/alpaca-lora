@@ -30,10 +30,10 @@ def train(
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "./lora-alpaca",
     # training hyperparams
-    batch_size: int = 4,
-    micro_batch_size: int = 1,
+    batch_size: int = 64,
+    micro_batch_size: int = 8,
     num_epochs: int = 3,
-    learning_rate: float = 3e-4,
+    learning_rate: float = 1e-4,
     cutoff_len: int = 256,
     val_set_size: int = 2000,
     # lora hyperparams
