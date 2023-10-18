@@ -2,9 +2,9 @@ import os
 import sys
 from typing import List
 
+import fire
 import torch
 import transformers
-import fire
 from datasets import load_dataset
 
 """
@@ -17,31 +17,26 @@ from peft import (
     LoraConfig,
     get_peft_model,
     get_peft_model_state_dict,
+    prepare_model_for_int8_training,
     set_peft_model_state_dict,
 )
-from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaTokenizer, LlamaForCausalLM
+from transformers import LlamaForCausalLM, LlamaTokenizer
 
 from utils.prompter import Prompter
-from datasets import load_metric
-metric = load_metric('accuracy')
-import numpy as np
-def compute_metrics(eval_pred):
-    predictions, labels = eval_pred
-    predictions = np.argmax(predictions, axis=1)
-    return metric.compute(predictions=predictions, references=labels)
+
 
 def train(
     # model/data params
-    base_model: str = "NousResearch/Llama-2-7b-chat-hf",  # the only required argument
+    base_model: str = "TheBloke/Llama-2-7b-Chat-GPTQ",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
-    batch_size: int = 16,
+    batch_size: int = 64,
     micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
     cutoff_len: int = 256,
-    val_set_size: int = 100,
+    val_set_size: int = 2000,
     # lora hyperparams
     lora_r: int = 8,
     lora_alpha: int = 16,
@@ -51,14 +46,14 @@ def train(
         "v_proj",
     ],
     # llm hyperparams
-    train_on_inputs: bool = False,  # if False, masks out inputs in loss
+    train_on_inputs: bool = True,  # if False, masks out inputs in loss
     add_eos_token: bool = False,
     group_by_length: bool = False,  # faster, but produces an odd training loss curve
     # wandb params
-    wandb_project: str = "LLM-zhihu",
-    wandb_run_name: str = "zhihu-7b",
-    wandb_watch: str = "false",  # options: false | gradients | all
-    wandb_log_model: str = "true",  # options: false | true
+    wandb_project: str = "",
+    wandb_run_name: str = "",
+    wandb_watch: str = "",  # options: false | gradients | all
+    wandb_log_model: str = "",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
 ):
@@ -95,7 +90,7 @@ def train(
 
     prompter = Prompter(prompt_template_name)
 
-    device_map = "cuda"
+    device_map = "auto"
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -116,6 +111,7 @@ def train(
 
     model = LlamaForCausalLM.from_pretrained(
         base_model,
+        load_in_8bit=True,
         torch_dtype=torch.float16,
         device_map=device_map,
     )
@@ -175,7 +171,7 @@ def train(
             ]  # could be sped up, probably
         return tokenized_full_prompt
 
-    #model = prepare_model_for_int8_training(model)
+    model = prepare_model_for_int8_training(model)
 
     config = LoraConfig(
         r=lora_r,
@@ -232,6 +228,7 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
+
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
