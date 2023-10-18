@@ -26,7 +26,7 @@ from utils.prompter import Prompter
 
 def train(
     # model/data params
-    base_model: str = "TheBloke/Llama-2-7b-Chat-GPTQ",  # the only required argument
+    base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
