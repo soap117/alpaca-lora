@@ -5,6 +5,7 @@ from typing import List
 import fire
 import torch
 import transformers
+from datasets import list_datasets, load_from_disk
 from datasets import load_dataset
 
 """
@@ -104,7 +105,7 @@ def train(
 
     prompter = Prompter(prompt_template_name)
 
-    device_map = "auto"
+    device_map = "cuda"
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -223,19 +224,28 @@ def train(
 
     model.print_trainable_parameters()  # Be more transparent about the % of trainable params.
 
-    if val_set_size > 0:
-        train_val = data["train"].train_test_split(
-            test_size=val_set_size, shuffle=True, seed=42
-        )
-        train_data = (
-            train_val["train"].shuffle().map(generate_and_tokenize_prompt)
-        )
-        val_data = (
-            train_val["test"].shuffle().map(generate_and_tokenize_prompt)
-        )
+    #load the data if exists
+
+    if os.path.exists("train_data") and os.path.exists("val_data"):
+        train_data = load_from_disk("train_data")
+        val_data = load_from_disk("val_data")
     else:
-        train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
-        val_data = None
+        if val_set_size > 0:
+            train_val = data["train"].train_test_split(
+                test_size=val_set_size, shuffle=True, seed=42
+            )
+            train_data = (
+                train_val["train"].shuffle().map(generate_and_tokenize_prompt)
+            )
+            val_data = (
+                train_val["test"].shuffle().map(generate_and_tokenize_prompt)
+            )
+        else:
+            train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
+            val_data = None
+        # save the datasets
+        train_data.save_to_disk("train_data.data")
+        val_data.save_to_disk("val_data.data")
 
     if not ddp and torch.cuda.device_count() > 1:
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
