@@ -228,7 +228,7 @@ def train(
         model.is_parallelizable = True
         model.model_parallel = True
     wandb.init(project=wandb_project, name=wandb_run_name)
-    wandb.watch(model, log="all")
+    wandb.watch(model, log="all", log_freq=10)
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
