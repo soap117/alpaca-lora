@@ -4,7 +4,6 @@ from typing import List
 
 import torch
 import transformers
-import wandb
 from datasets import load_dataset
 
 """
@@ -19,7 +18,7 @@ from peft import (
     get_peft_model_state_dict,
     set_peft_model_state_dict,
 )
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaTokenizer, LlamaForCausalLM
 
 from utils.prompter import Prompter
 from datasets import load_metric
@@ -114,13 +113,13 @@ def train(
     if len(wandb_log_model) > 0:
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
 
-    model = AutoModelForCausalLM.from_pretrained(
+    model = LlamaForCausalLM.from_pretrained(
         base_model,
         torch_dtype=torch.float16,
         device_map=device_map,
     )
 
-    tokenizer = AutoTokenizer.from_pretrained(base_model, sep_token="</s>", cls_token="<s>", mask_token="<mask>")
+    tokenizer = LlamaTokenizer.from_pretrained(base_model)
 
     tokenizer.pad_token_id = (
         0  # unk. we want this to be different from the eos token
@@ -236,7 +235,6 @@ def train(
         model=model,
         train_dataset=train_data,
         eval_dataset=val_data,
-        compute_metrics=compute_metrics,
         args=transformers.TrainingArguments(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
@@ -284,4 +282,4 @@ def train(
 
 
 if __name__ == "__main__":
-    train()
+    fire.Fire(train)
