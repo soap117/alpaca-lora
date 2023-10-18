@@ -237,6 +237,7 @@ def train(
         model=model,
         train_dataset=train_data,
         eval_dataset=val_data,
+        compute_metrics=compute_metrics,
         args=transformers.TrainingArguments(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
@@ -257,7 +258,6 @@ def train(
             group_by_length=group_by_length,
             report_to="wandb" if use_wandb else None,
             run_name=wandb_run_name if use_wandb else None,
-            compute_metrics=compute_metrics,
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True
