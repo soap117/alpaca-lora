@@ -23,7 +23,22 @@ from transformers import LlamaForCausalLM, LlamaTokenizer
 
 from utils.prompter import Prompter
 
+from transformers import TrainerCallback
 
+class MyCallback(TrainerCallback):
+    def on_step_end(self, args, state, control, **kwargs):
+        if state.global_step % 10 == 0:
+            #generate the predicted output of the model and print it
+            output = state.trainer.model.generate(
+                input_ids=state.input_ids,
+                attention_mask=state.input_ids,
+                max_length=100,
+                num_beams=5,
+                early_stopping=True,
+                no_repeat_ngram_size=2,
+                num_return_sequences=1,
+            )
+            print("Generated output: ", state.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
@@ -226,11 +241,12 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-
+    my_callback = MyCallback()
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
         eval_dataset=val_data,
+        callbacks=[my_callback],
         args=transformers.TrainingArguments(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
