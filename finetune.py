@@ -49,10 +49,10 @@ def train(
     add_eos_token: bool = False,
     group_by_length: bool = False,  # faster, but produces an odd training loss curve
     # wandb params
-    wandb_project: str = "",
-    wandb_run_name: str = "",
-    wandb_watch: str = "",  # options: false | gradients | all
-    wandb_log_model: str = "",  # options: false | true
+    wandb_project: str = "LLM-zhihu",
+    wandb_run_name: str = "zhihu-7b",
+    wandb_watch: str = "false",  # options: false | gradients | all
+    wandb_log_model: str = "true",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
 ):
@@ -112,6 +112,7 @@ def train(
         base_model,
         torch_dtype=torch.float16,
         device_map=device_map,
+        cache_dir="./cache/",
     )
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
