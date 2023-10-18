@@ -23,7 +23,13 @@ from peft import (
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from utils.prompter import Prompter
-
+from datasets import load_metric
+metric = load_metric('accuracy')
+import numpy as np
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    predictions = np.argmax(predictions, axis=1)
+    return metric.compute(predictions=predictions, references=labels)
 
 def train(
     # model/data params
@@ -251,6 +257,7 @@ def train(
             group_by_length=group_by_length,
             report_to="wandb" if use_wandb else None,
             run_name=wandb_run_name if use_wandb else None,
+            compute_metrics=compute_metrics,
         ),
         data_collator=transformers.DataCollatorForSeq2Seq(
             tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True
