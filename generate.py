@@ -29,7 +29,7 @@ def main(
     lora_weights: str = "/data/junyu/lora-alpaca",
     prompt_template: str = "alpaca",  # The prompt template to use, will default to alpaca.
     server_name: str = "0.0.0.0",  # Allows to listen on all interfaces by providing '0.
-    share_gradio: bool = True,
+    share_gradio: bool = False,
 ):
     base_model = base_model or os.environ.get("BASE_MODEL", "")
     assert (
@@ -156,6 +156,7 @@ def main(
             )
         s = generation_output.sequences[0]
         output = tokenizer.decode(s)
+        print(output)
         yield prompter.get_response(output)
 
     gr.Interface(
