@@ -66,7 +66,7 @@ def train(
     micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 1e-4,
-    cutoff_len: int = 400,
+    cutoff_len: int = 512,
     val_set_size: int = 2000,
     # lora hyperparams
     lora_r: int = 8,
