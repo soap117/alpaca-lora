@@ -30,9 +30,18 @@ class MyCallback(TrainerCallback):
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step % 10 == 0:
             #generate the predicted output of the model and print it
-            output = state.trainer.model.generate(
-                input_ids=state.input_ids,
-                attention_mask=state.input_ids,
+            model = kwargs["model"]
+            tokenizer = kwargs["tokenizer"]
+            test_input =\
+                """Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+                ### Instruction:
+                你需要模拟一个中文互联网平台知乎上的用户回答以下问题：如何一句话惹怒动画《RWBY》铁粉？
+                """
+            test_input = tokenizer.encode(test_input, return_tensors="pt")
+            output = model.generate(
+                input_ids=test_input,
+                attention_mask=torch.ones_like(test_input),
                 max_length=100,
                 num_beams=5,
                 early_stopping=True,
