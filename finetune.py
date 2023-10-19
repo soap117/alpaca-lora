@@ -237,7 +237,7 @@ def train(
 
     #load the data if exists
 
-    if os.path.exists("train_data") and os.path.exists("val_data"):
+    if os.path.exists("train_data.data") and os.path.exists("val_data.data"):
         train_data = load_from_disk("train_data")
         val_data = load_from_disk("val_data")
     else:
