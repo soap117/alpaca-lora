@@ -64,11 +64,11 @@ def train(
     micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
-    cutoff_len: int = 512,
+    cutoff_len: int = 300,
     val_set_size: int = 2000,
     # lora hyperparams
-    lora_r: int = 16,
-    lora_alpha: int = 64,
+    lora_r: int = 8,
+    lora_alpha: int = 16,
     lora_dropout: float = 0.05,
     lora_target_modules: List[str] = [
         "q_proj",
@@ -82,7 +82,7 @@ def train(
     wandb_project: str = "LLM-zhihu",
     wandb_run_name: str = "zhihu-7b",
     wandb_watch: str = "false",  # options: false | gradients | all
-    wandb_log_model: str = "true",  # options: false | true
+    wandb_log_model: str = "false",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
 ):
@@ -119,7 +119,7 @@ def train(
 
     prompter = Prompter(prompt_template_name)
 
-    device_map = "cuda"
+    device_map = "auto"
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -275,6 +275,7 @@ def train(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
             num_train_epochs=num_epochs,
+            warmup_steps=100,
             learning_rate=learning_rate,
             fp16=True,
             logging_steps=10,
