@@ -56,7 +56,7 @@ class MyCallback(TrainerCallback):
                 max_length=512,
             )
             print(output.shape)
-            print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
+            print("Generated output: ", self.tokenizer.decode(output[0]))
 def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
