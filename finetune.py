@@ -27,11 +27,13 @@ from utils.prompter import Prompter
 from transformers import TrainerCallback
 
 class MyCallback(TrainerCallback):
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step % 2 == 0:
             #generate the predicted output of the model and print it
             model = kwargs["model"]
-            tokenizer = kwargs["tokenizer"]
+            tokenizer = self.tokenizer
             test_input =\
                 """Below is an instruction that describes a task. Write a response that appropriately completes the request.
 
@@ -260,7 +262,7 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-    my_callback = MyCallback()
+    my_callback = MyCallback(tokenizer)
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
