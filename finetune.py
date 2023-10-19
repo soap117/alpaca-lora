@@ -27,8 +27,9 @@ from utils.prompter import Prompter
 from transformers import TrainerCallback
 
 class MyCallback(TrainerCallback):
-    def __init__(self, tokenizer):
+    def __init__(self, trainer, tokenizer):
         self.tokenizer = tokenizer
+        self._trainer = trainer
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step % 10 == 0:
             #generate the predicted output of the model and print it
@@ -271,7 +272,6 @@ def train(
         model=model,
         train_dataset=train_data,
         eval_dataset=val_data,
-        callbacks=[my_callback],
         args=transformers.TrainingArguments(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
@@ -296,6 +296,7 @@ def train(
             tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True
         ),
     )
+    trainer.add_callback(MyCallback(trainer, tokenizer))
     model.config.use_cache = False
 
     old_state_dict = model.state_dict
