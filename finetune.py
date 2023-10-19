@@ -35,10 +35,14 @@ class MyCallback(TrainerCallback):
             model = kwargs["model"]
             tokenizer = self.tokenizer
             test_input =\
-                """Below is an instruction that describes a task. Write a response that appropriately completes the request.
+                """
+                Below is an instruction that describes a task. Write a response that appropriately completes the request.
 
                 ### Instruction:
                 你需要模拟一个中文互联网平台知乎上的用户回答以下问题：如何一句话惹怒动画《RWBY》铁粉？
+                
+                ### Response:
+                
                 """
             test_input = tokenizer.encode(test_input, return_tensors="pt")
             #map to model device
