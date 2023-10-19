@@ -51,7 +51,7 @@ class MyCallback(TrainerCallback):
                 no_repeat_ngram_size=2,
                 num_return_sequences=1,
             )
-            print("Generated output: ", state.tokenizer.decode(output[0], skip_special_tokens=True))
+            print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
