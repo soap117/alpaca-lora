@@ -28,7 +28,7 @@ from transformers import TrainerCallback
 
 class MyCallback(TrainerCallback):
     def on_step_end(self, args, state, control, **kwargs):
-        if state.global_step % 10 == 0:
+        if state.global_step % 2 == 0:
             #generate the predicted output of the model and print it
             model = kwargs["model"]
             tokenizer = kwargs["tokenizer"]
