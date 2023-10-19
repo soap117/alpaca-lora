@@ -59,7 +59,7 @@ def train(
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
     batch_size: int = 64,
-    micro_batch_size: int = 4,
+    micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
     cutoff_len: int = 512,
