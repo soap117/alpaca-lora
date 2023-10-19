@@ -65,7 +65,7 @@ def train(
     # training hyperparams
     batch_size: int = 16,
     micro_batch_size: int = 8,
-    num_epochs: int = 3,
+    num_epochs: int = 2,
     learning_rate: float = 3e-4,
     cutoff_len: int = 512,
     val_set_size: int = 2000,
@@ -148,7 +148,7 @@ def train(
     )
     model = LlamaForCausalLM.from_pretrained(
         base_model,
-        quantization_config=bnb_config,
+        #quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
         device_map=device_map,
         cache_dir="./cache/",
