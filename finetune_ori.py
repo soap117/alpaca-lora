@@ -31,8 +31,8 @@ def train(
     data_path: str = "yahma/alpaca-cleaned",
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
-    batch_size: int = 128,
-    micro_batch_size: int = 4,
+    batch_size: int = 64,
+    micro_batch_size: int = 16,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
     cutoff_len: int = 256,
@@ -53,7 +53,7 @@ def train(
     wandb_project: str = "LLM-ori",
     wandb_run_name: str = "LLAMA2-7b",
     wandb_watch: str = "false",  # options: false | gradients | all
-    wandb_log_model: str = "true",  # options: false | true
+    wandb_log_model: str = "false",  # options: false | true
     resume_from_checkpoint: str = None,  # either training checkpoint or final adapter
     prompt_template_name: str = "alpaca",  # The prompt template to use, will default to alpaca.
 ):
