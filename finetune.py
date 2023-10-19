@@ -46,10 +46,7 @@ class MyCallback(TrainerCallback):
             output = model.generate(
                 input_ids=test_input,
                 max_length=100,
-                num_beams=5,
                 early_stopping=True,
-                no_repeat_ngram_size=2,
-                num_return_sequences=1,
             )
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
