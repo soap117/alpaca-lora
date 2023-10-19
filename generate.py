@@ -42,7 +42,7 @@ def main(
         model = LlamaForCausalLM.from_pretrained(
             base_model,
             load_in_8bit=load_8bit,
-            torch_dtype=torch.float16,
+            torch_dtype=torch.bfloat16,
             device_map="auto",
         )
         model = PeftModel.from_pretrained(
@@ -54,13 +54,13 @@ def main(
         model = LlamaForCausalLM.from_pretrained(
             base_model,
             device_map={"": device},
-            torch_dtype=torch.float16,
+            torch_dtype=torch.bfloat16,
         )
         model = PeftModel.from_pretrained(
             model,
             lora_weights,
             device_map={"": device},
-            torch_dtype=torch.float16,
+            torch_dtype=torch.bfloat16,
         )
     else:
         model = LlamaForCausalLM.from_pretrained(
