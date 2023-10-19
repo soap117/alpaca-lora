@@ -1,7 +1,7 @@
 import os
 import sys
 from typing import List
-
+from transformers import BitsAndBytesConfig
 import fire
 import torch
 import transformers
@@ -25,6 +25,7 @@ from transformers import LlamaForCausalLM, LlamaTokenizer
 from utils.prompter import Prompter
 
 from transformers import TrainerCallback
+from peft import prepare_model_for_kbit_training
 
 class MyCallback(TrainerCallback):
     def __init__(self, trainer, tokenizer):
@@ -60,7 +61,7 @@ def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
-    output_dir: str = "/data/junyu/lora-alpaca",
+    output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
     batch_size: int = 64,
     micro_batch_size: int = 8,
@@ -139,9 +140,15 @@ def train(
         os.environ["WANDB_WATCH"] = wandb_watch
     if len(wandb_log_model) > 0:
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
-
+    bnb_config = BitsAndBytesConfig(
+        load_in_8bit=True,
+        bnb_8bit_use_double_quant=True,
+        bnb_8bit_quant_type="nf8",
+        bnb_8bit_compute_dtype=torch.bfloat16
+    )
     model = LlamaForCausalLM.from_pretrained(
         base_model,
+        quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
         device_map=device_map,
         cache_dir="./cache/",
@@ -222,6 +229,7 @@ def train(
         bias="none",
         task_type="CAUSAL_LM",
     )
+    model = prepare_model_for_kbit_training(model)
     model = get_peft_model(model, config)
 
     if data_path.endswith(".json") or data_path.endswith(".jsonl"):
