@@ -69,17 +69,16 @@ def train(
     cutoff_len: int = 512,
     val_set_size: int = 2000,
     # lora hyperparams
-    lora_r: int = 8,
+    lora_r: int = 16,
     lora_alpha: int = 16,
     lora_dropout: float = 0.05,
     lora_target_modules: List[str] = [
-        "q_proj",
-        "v_proj",
+        "q_proj", "o_proj", "v_proj", "gate_proj", "down_proj", "k_proj", "up_proj"
     ],
     # llm hyperparams
     train_on_inputs: bool = True,  # if False, masks out inputs in loss
     add_eos_token: bool = False,
-    group_by_length: bool = False,  # faster, but produces an odd training loss curve
+    group_by_length: bool = True,  # faster, but produces an odd training loss curve
     # wandb params
     wandb_project: str = "LLM-zhihu",
     wandb_run_name: str = "zhihu-7b",
@@ -214,7 +213,7 @@ def train(
         if 'lm_head' in lora_module_names:  # needed for 16-bit
             lora_module_names.remove('lm_head')
         return list(lora_module_names)
-    lora_target_modules = find_all_linear_names(model)
+    #lora_target_modules = find_all_linear_names(model)
     config = LoraConfig(
         r=lora_r,
         lora_alpha=lora_alpha,
@@ -254,7 +253,7 @@ def train(
 
     #load the data if exists
 
-    if os.path.exists("train_data.data") and os.path.exists("val_data.data"):
+    if os.path.exists("train_data.data") and os.path.exists("val_data.data") and False:
         train_data = load_from_disk("train_data.data")
         val_data = load_from_disk("val_data.data")
     else:
