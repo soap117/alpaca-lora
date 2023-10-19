@@ -116,7 +116,6 @@ def train(
         device_map=device_map,
 	    cache_dir="./cache/",
     )
-    model.half()
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
 
