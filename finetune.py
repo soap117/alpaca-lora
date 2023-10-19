@@ -37,7 +37,7 @@ class MyCallback(TrainerCallback):
             test_input =\
                 """
                 ### Instruction:
-                ？
+                你需要模拟一个中文互联网平台知乎上的用户回答以下问题：如何评价美国的社会制度？
                 
                 ### Response:
                 
