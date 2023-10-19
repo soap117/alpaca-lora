@@ -214,7 +214,7 @@ def train(
         if 'lm_head' in lora_module_names:  # needed for 16-bit
             lora_module_names.remove('lm_head')
         return list(lora_module_names)
-
+    lora_target_modules = find_all_linear_names(model)
     config = LoraConfig(
         r=lora_r,
         lora_alpha=lora_alpha,
