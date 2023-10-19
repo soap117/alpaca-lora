@@ -30,7 +30,7 @@ class MyCallback(TrainerCallback):
     def __init__(self, tokenizer):
         self.tokenizer = tokenizer
     def on_step_end(self, args, state, control, **kwargs):
-        if state.global_step % 2 == 0:
+        if state.global_step % 10 == 0:
             #generate the predicted output of the model and print it
             model = kwargs["model"]
             tokenizer = self.tokenizer
