@@ -46,6 +46,7 @@ class MyCallback(TrainerCallback):
             #map to model device
             test_input = test_input.to(model.device)
             output = model.generate(
+                num_beams=1,
                 input_ids=test_input,
                 max_length=512,
             )
