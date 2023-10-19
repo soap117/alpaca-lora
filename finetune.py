@@ -122,17 +122,17 @@ def train(
     prompter = Prompter(prompt_template_name)
 
     device_map = "auto"
-    world_size = int(os.environ.get("WORLD_SIZE", 1))
-    ddp = world_size != 1
-    if ddp:
-        device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
-        gradient_accumulation_steps = gradient_accumulation_steps // world_size
+    #world_size = int(os.environ.get("WORLD_SIZE", 1))
+    #ddp = world_size != 1
+    #if ddp:
+    #    device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
+    #    gradient_accumulation_steps = gradient_accumulation_steps // world_size
 
     # Check if parameter passed or if set within environ
     use_wandb = len(wandb_project) > 0 or (
         "WANDB_PROJECT" in os.environ and len(os.environ["WANDB_PROJECT"]) > 0
     )
-    use_wandb = False
+    print("gradient_acc_steps:",gradient_accumulation_steps)
     # Only overwrite environ if wandb param passed
     if len(wandb_project) > 0:
         os.environ["WANDB_PROJECT"] = wandb_project
