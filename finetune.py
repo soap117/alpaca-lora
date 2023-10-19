@@ -121,7 +121,8 @@ def train(
 
     prompter = Prompter(prompt_template_name)
 
-    device_map = "cuda"
+    device_map = "sequential"
+    max_memory = {0: "60GiB", "cpu": "0GiB"}
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -150,6 +151,7 @@ def train(
         base_model,
         quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
+        max_memory=max_memory,
         device_map=device_map,
         cache_dir="./cache/",
     )
