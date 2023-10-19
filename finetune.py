@@ -267,7 +267,6 @@ def train(
         # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
         model.is_parallelizable = True
         model.model_parallel = True
-    my_callback = MyCallback(tokenizer)
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
