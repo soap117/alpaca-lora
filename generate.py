@@ -26,7 +26,7 @@ except:  # noqa: E722
 def main(
     load_8bit: bool = False,
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",
-    lora_weights: str = "/data/junyu/lora-alpaca/checkpoint-1000",
+    lora_weights: str = "davidkim205/komt-Llama-2-7b-chat-hf-lora",
     prompt_template: str = "alpaca",  # The prompt template to use, will default to alpaca.
     server_name: str = "0.0.0.0",  # Allows to listen on all interfaces by providing '0.
     share_gradio: bool = False,
@@ -45,11 +45,11 @@ def main(
             torch_dtype=torch.bfloat16,
             device_map="auto",
         )
-        #model = PeftModel.from_pretrained(
-        #    model,
-        #    lora_weights,
-        #    torch_dtype=torch.float16,
-        #)
+        model = PeftModel.from_pretrained(
+            model,
+            lora_weights,
+            torch_dtype=torch.float16,
+        )
     elif device == "mps":
         model = LlamaForCausalLM.from_pretrained(
             base_model,
