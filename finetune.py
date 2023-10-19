@@ -77,7 +77,7 @@ def train(
         "q_proj", "o_proj", "v_proj", "gate_proj", "down_proj", "k_proj", "up_proj"
     ],
     # llm hyperparams
-    train_on_inputs: bool = True,  # if False, masks out inputs in loss
+    train_on_inputs: bool = False,  # if False, masks out inputs in loss
     add_eos_token: bool = False,
     group_by_length: bool = True,  # faster, but produces an odd training loss curve
     # wandb params
