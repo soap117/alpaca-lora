@@ -277,10 +277,10 @@ def train(
         train_data.save_to_disk("train_data.data")
         val_data.save_to_disk("val_data.data")
 
-    if not ddp and torch.cuda.device_count() > 1:
-        # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
-        model.is_parallelizable = True
-        model.model_parallel = True
+    #if not ddp and torch.cuda.device_count() > 1:
+    #    # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
+    #    model.is_parallelizable = True
+    #    model.model_parallel = True
     trainer = transformers.Trainer(
         model=model,
         train_dataset=train_data,
