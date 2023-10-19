@@ -45,11 +45,11 @@ def main(
             torch_dtype=torch.bfloat16,
             device_map="auto",
         )
-        model = PeftModel.from_pretrained(
-            model,
-            lora_weights,
-            torch_dtype=torch.float16,
-        )
+        #model = PeftModel.from_pretrained(
+        #    model,
+        #    lora_weights,
+        #    torch_dtype=torch.float16,
+        #)
     elif device == "mps":
         model = LlamaForCausalLM.from_pretrained(
             base_model,
