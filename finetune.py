@@ -64,7 +64,7 @@ def train(
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
     batch_size: int = 16,
-    micro_batch_size: int = 8,
+    micro_batch_size: int = 4,
     num_epochs: int = 2,
     learning_rate: float = 3e-4,
     cutoff_len: int = 512,
