@@ -32,7 +32,7 @@ class MyCallback(TrainerCallback):
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step % 10 == 0:
             #generate the predicted output of the model and print it
-            model = self.model
+            model = self._trainer.model
             tokenizer = self.tokenizer
             test_input =\
                 """
