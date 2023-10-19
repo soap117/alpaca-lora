@@ -58,7 +58,7 @@ class MyCallback(TrainerCallback):
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
     # model/data params
-    base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
+    base_model: str = "meta-llama/Llama-2-7b-hf",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
@@ -143,11 +143,10 @@ def train(
 
     model = LlamaForCausalLM.from_pretrained(
         base_model,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         device_map=device_map,
         cache_dir="./cache/",
     )
-    model.half()
 
     tokenizer = LlamaTokenizer.from_pretrained(base_model)
 
@@ -291,11 +290,12 @@ def train(
             num_train_epochs=num_epochs,
             learning_rate=learning_rate,
             logging_steps=10,
+            bf16=True,
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=10 if val_set_size > 0 else None,
-            save_steps=10,
+            eval_steps=20 if val_set_size > 0 else None,
+            save_steps=200,
             output_dir=output_dir,
             save_total_limit=3,
             load_best_model_at_end=True if val_set_size > 0 else False,
