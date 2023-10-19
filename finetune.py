@@ -32,6 +32,8 @@ class MyCallback(TrainerCallback):
         self._trainer = trainer
     def on_step_end(self, args, state, control, **kwargs):
         if state.global_step % 10 == 0:
+            #print the current learning rate
+            print("Current learning rate: ", self._trainer.lr_scheduler.get_last_lr())
             #generate the predicted output of the model and print it
             model = self._trainer.model
             tokenizer = self.tokenizer
