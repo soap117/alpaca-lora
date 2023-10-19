@@ -41,9 +41,10 @@ class MyCallback(TrainerCallback):
                 你需要模拟一个中文互联网平台知乎上的用户回答以下问题：如何一句话惹怒动画《RWBY》铁粉？
                 """
             test_input = tokenizer.encode(test_input, return_tensors="pt")
+            #map to model device
+            test_input = test_input.to(model.device)
             output = model.generate(
                 input_ids=test_input,
-                attention_mask=torch.ones_like(test_input),
                 max_length=100,
                 num_beams=5,
                 early_stopping=True,
