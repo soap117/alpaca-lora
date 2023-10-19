@@ -36,10 +36,8 @@ class MyCallback(TrainerCallback):
             tokenizer = self.tokenizer
             test_input =\
                 """
-                Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
                 ### Instruction:
-                你需要模拟一个中文互联网平台知乎上的用户回答以下问题：如何一句话惹怒动画《RWBY》铁粉？
+                ？
                 
                 ### Response:
                 
@@ -49,7 +47,7 @@ class MyCallback(TrainerCallback):
             test_input = test_input.to(model.device)
             output = model.generate(
                 input_ids=test_input,
-                max_length=256,
+                max_length=512,
             )
             print(output.shape)
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
@@ -60,10 +58,10 @@ def train(
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
     batch_size: int = 64,
-    micro_batch_size: int = 8,
+    micro_batch_size: int = 4,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
-    cutoff_len: int = 256,
+    cutoff_len: int = 512,
     val_set_size: int = 2000,
     # lora hyperparams
     lora_r: int = 8,
@@ -239,7 +237,7 @@ def train(
 
     #load the data if exists
 
-    if os.path.exists("train_data.data") and os.path.exists("val_data.data"):
+    if os.path.exists("train_data.data") and os.path.exists("val_data.data") and False:
         train_data = load_from_disk("train_data.data")
         val_data = load_from_disk("val_data.data")
     else:
