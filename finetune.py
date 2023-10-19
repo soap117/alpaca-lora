@@ -58,7 +58,7 @@ class MyCallback(TrainerCallback):
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
     # model/data params
-    base_model: str = "meta-llama/Llama-2-7b-hf",  # the only required argument
+    base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-alpaca",
     # training hyperparams
@@ -66,7 +66,7 @@ def train(
     micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 1e-4,
-    cutoff_len: int = 300,
+    cutoff_len: int = 400,
     val_set_size: int = 2000,
     # lora hyperparams
     lora_r: int = 8,
@@ -294,7 +294,7 @@ def train(
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=20 if val_set_size > 0 else None,
+            eval_steps=200 if val_set_size > 0 else None,
             save_steps=200,
             output_dir=output_dir,
             save_total_limit=3,
