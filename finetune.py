@@ -49,7 +49,7 @@ class MyCallback(TrainerCallback):
             test_input = test_input.to(model.device)
             output = model.generate(
                 input_ids=test_input,
-                max_length=100,
+                max_length=256,
             )
             print(output.shape)
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
