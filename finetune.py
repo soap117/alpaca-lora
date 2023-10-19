@@ -121,7 +121,7 @@ def train(
 
     prompter = Prompter(prompt_template_name)
 
-    device_map = "auto"
+    device_map = "cuda"
     world_size = int(os.environ.get("WORLD_SIZE", 1))
     ddp = world_size != 1
     if ddp:
@@ -261,7 +261,7 @@ def train(
 
     #load the data if exists
 
-    if os.path.exists("train_data.data") and os.path.exists("val_data.data"):
+    if os.path.exists("train_data.data") and os.path.exists("val_data.data") and False:
         train_data = load_from_disk("train_data.data")
         val_data = load_from_disk("val_data.data")
     else:
