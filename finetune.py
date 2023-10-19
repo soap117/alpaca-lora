@@ -50,8 +50,8 @@ class MyCallback(TrainerCallback):
             output = model.generate(
                 input_ids=test_input,
                 max_length=100,
-                early_stopping=True,
             )
+            print(output.shape)
             print("Generated output: ", self.tokenizer.decode(output[0], skip_special_tokens=True))
 def train(
     # model/data params
