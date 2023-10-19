@@ -49,12 +49,7 @@ class MyCallback(TrainerCallback):
             test_input = tokenizer.encode(test_input, return_tensors="pt")
             #map to model device
             test_input = test_input.to(model.device)
-            output = model.generate(
-                num_beams=1,
-                do_sample=False,
-                input_ids=test_input,
-                max_length=512,
-            )
+            output = model.generate(test_input, max_length=512, num_beams=1, early_stopping=True)
             print(output.shape)
             print("Generated output: ", self.tokenizer.decode(output[0]))
 def train(
@@ -318,12 +313,6 @@ def train(
     trainer.add_callback(MyCallback(trainer, tokenizer))
     model.config.use_cache = False
 
-    old_state_dict = model.state_dict
-    model.state_dict = (
-        lambda self, *_, **__: get_peft_model_state_dict(
-            self, old_state_dict()
-        )
-    ).__get__(model, type(model))
 
     if torch.__version__ >= "2" and sys.platform != "win32":
         model = torch.compile(model)
