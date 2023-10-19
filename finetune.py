@@ -65,7 +65,7 @@ def train(
     batch_size: int = 64,
     micro_batch_size: int = 8,
     num_epochs: int = 3,
-    learning_rate: float = 3e-4,
+    learning_rate: float = 1e-4,
     cutoff_len: int = 300,
     val_set_size: int = 2000,
     # lora hyperparams
@@ -289,7 +289,6 @@ def train(
             per_device_train_batch_size=micro_batch_size,
             gradient_accumulation_steps=gradient_accumulation_steps,
             num_train_epochs=num_epochs,
-            warmup_steps=10,
             learning_rate=learning_rate,
             fp16=True,
             logging_steps=10,
