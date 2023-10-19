@@ -63,7 +63,7 @@ def train(
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
-    batch_size: int = 64,
+    batch_size: int = 16,
     micro_batch_size: int = 8,
     num_epochs: int = 3,
     learning_rate: float = 3e-4,
