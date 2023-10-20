@@ -44,6 +44,7 @@ def main(
             load_in_8bit=load_8bit,
             torch_dtype=torch.bfloat16,
             device_map="auto",
+            cache_dir="./cache/",
         )
         model = PeftModel.from_pretrained(
             model,
