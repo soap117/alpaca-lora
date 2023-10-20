@@ -32,7 +32,7 @@ class MyCallback(TrainerCallback):
         self.tokenizer = tokenizer
         self._trainer = trainer
     def on_step_end(self, args, state, control, **kwargs):
-        if state.global_step % 100 == 0:
+        if state.global_step % 10 == 0:
             #print the current learning rate
             print("Current learning rate: ", self._trainer.lr_scheduler.get_last_lr())
             #generate the predicted output of the model and print it
@@ -60,7 +60,7 @@ class MyCallback(TrainerCallback):
                 generation_config=generation_config,
                 return_dict_in_generate=True,
                 output_scores=True,
-                max_new_tokens=400,
+                max_new_tokens=256,
             )
             s = generation_output.sequences[0]
             output = tokenizer.decode(s)
@@ -82,7 +82,7 @@ def train(
     lora_alpha: int = 16,
     lora_dropout: float = 0.05,
     lora_target_modules: List[str] = [
-        "q_proj", "o_proj", "v_proj", "gate_proj", "down_proj", "k_proj", "up_proj"
+        "q_proj", "o_proj", "v_proj", "down_proj", "k_proj", "up_proj"
     ],
     # llm hyperparams
     train_on_inputs: bool = False,  # if False, masks out inputs in loss
@@ -309,8 +309,8 @@ def train(
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=10 if val_set_size > 0 else None,
-            save_steps=10,
+            eval_steps=100 if val_set_size > 0 else None,
+            save_steps=100,
             output_dir=output_dir,
             save_total_limit=3,
             load_best_model_at_end=True if val_set_size > 0 else False,
