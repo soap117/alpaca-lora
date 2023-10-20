@@ -58,7 +58,7 @@ def train(
     data_path: str = "social_opinion_zhihu.json",
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
-    batch_size: int = 16,
+    batch_size: int = 32,
     micro_batch_size: int = 4,
     num_epochs: int = 2,
     learning_rate: float = 3e-4,
@@ -74,7 +74,7 @@ def train(
     # llm hyperparams
     train_on_inputs: bool = False,  # if False, masks out inputs in loss
     add_eos_token: bool = False,
-    group_by_length: bool = True,  # faster, but produces an odd training loss curve
+    group_by_length: bool = False,  # faster, but produces an odd training loss curve
     # wandb params
     wandb_project: str = "LLM-zhihu",
     wandb_run_name: str = "zhihu-7b",
