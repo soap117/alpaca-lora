@@ -296,7 +296,7 @@ def train(
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=200 if val_set_size > 0 else None,
+            eval_steps=100 if val_set_size > 0 else None,
             save_steps=100,
             output_dir=output_dir,
             save_total_limit=3,
