@@ -190,7 +190,7 @@ def main(
             ),
             gr.components.Checkbox(label="Stream output"),
         ],
-        outputs="text",
+        outputs="textarea",
         title="🦙🌲 Zhihu-LoRA",
         description="Zhihu-LoRA is a 7B-parameter LLaMA-2 model finetuned to follow instructions.",
     ).queue().launch(server_name="0.0.0.0", share=share_gradio)
