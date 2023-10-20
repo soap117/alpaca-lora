@@ -53,7 +53,6 @@ class MyCallback(TrainerCallback):
                 top_p=1.0,
                 top_k=10,
                 num_beams=2,
-                **kwargs,
             )
             generation_output = model.generate(
                 input_ids=input_ids,
