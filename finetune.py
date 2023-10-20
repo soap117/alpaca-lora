@@ -65,8 +65,7 @@ class MyCallback(TrainerCallback):
                 )
             s = generation_output.sequences[0]
             output = tokenizer.decode(s)
-            print(output.shape)
-            print("Generated output: ", self.tokenizer.decode(output[0]))
+            print("Generated output: ", output)
 def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
