@@ -48,11 +48,15 @@ class MyCallback(TrainerCallback):
                 """
             inputs = tokenizer(test_input, return_tensors="pt")
             input_ids = inputs["input_ids"].to(model.device)
+            #punish the repetition of the same token
             generation_config = GenerationConfig(
                 temperature=1.0,
                 top_p=1.0,
-                top_k=10,
-                num_beams=2,
+                top_k=30,
+                num_beams=5,
+                repetition_penalty=1.5,
+                no_repeat_ngram_size=5,
+                do_sample=True,
             )
             generation_output = model.generate(
                 input_ids=input_ids,
