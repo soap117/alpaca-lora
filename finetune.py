@@ -7,7 +7,7 @@ import torch
 import transformers
 from datasets import list_datasets, load_from_disk
 from datasets import load_dataset
-
+from transformers import GenerationConfig
 """
 Unused imports:
 import torch.nn as nn
@@ -46,10 +46,25 @@ class MyCallback(TrainerCallback):
                 ### Response:
                 
                 """
-            test_input = tokenizer.encode(test_input, return_tensors="pt")
-            #map to model device
-            test_input = test_input.to(model.device)
-            output = model.generate(test_input, max_length=512, num_beams=1, early_stopping=True)
+            inputs = tokenizer(test_input, return_tensors="pt")
+            input_ids = inputs["input_ids"].to(model.device)
+            generation_config = GenerationConfig(
+                temperature=1.0,
+                top_p=1.0,
+                top_k=10,
+                num_beams=2,
+                **kwargs,
+            )
+            with torch.no_grad():
+                generation_output = model.generate(
+                    input_ids=input_ids,
+                    generation_config=generation_config,
+                    return_dict_in_generate=True,
+                    output_scores=True,
+                    max_new_tokens=400,
+                )
+            s = generation_output.sequences[0]
+            output = tokenizer.decode(s)
             print(output.shape)
             print("Generated output: ", self.tokenizer.decode(output[0]))
 def train(
