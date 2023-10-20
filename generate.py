@@ -160,8 +160,9 @@ def main(
             )
         s = generation_output.sequences[0]
         output = tokenizer.decode(s)
+        output = prompter.get_response(output)
         print(output)
-        yield prompter.get_response(output)
+        return output
 
     gr.Interface(
         fn=evaluate,
