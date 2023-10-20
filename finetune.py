@@ -67,7 +67,7 @@ class MyCallback(TrainerCallback):
 def train(
     # model/data params
     base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
-    data_path: str = "social_opinion_zhihu.json",
+    data_path: str = "social_opinion_zhihu_clean.json",
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
     batch_size: int = 32,
@@ -268,9 +268,9 @@ def train(
 
     #load the data if exists
 
-    if os.path.exists("train_data.data") and os.path.exists("val_data.data"):
-        train_data = load_from_disk("train_data.data")
-        val_data = load_from_disk("val_data.data")
+    if os.path.exists("train_data_{}.data".format(data_path)) and os.path.exists("val_data_{}.data".format(data_path)):
+        train_data = load_from_disk("train_data_{}.data".format(data_path))
+        val_data = load_from_disk("val_data_{}.data".format(data_path))
     else:
         if val_set_size > 0:
             train_val = data["train"].train_test_split(
@@ -286,8 +286,8 @@ def train(
             train_data = data["train"].shuffle().map(generate_and_tokenize_prompt)
             val_data = None
         # save the datasets
-        train_data.save_to_disk("train_data.data")
-        val_data.save_to_disk("val_data.data")
+        train_data.save_to_disk("train_data_{}.data".format(data_path))
+        val_data.save_to_disk("val_data_{}.data".format(data_path))
 
     if not ddp and torch.cuda.device_count() > 1:
        # keeps Trainer from trying its own DataParallelism when more than 1 gpu is available
@@ -308,8 +308,8 @@ def train(
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=100 if val_set_size > 0 else None,
-            save_steps=100,
+            eval_steps=200 if val_set_size > 0 else None,
+            save_steps=200,
             output_dir=output_dir,
             save_total_limit=3,
             load_best_model_at_end=True if val_set_size > 0 else False,
