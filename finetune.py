@@ -55,7 +55,7 @@ class MyCallback(TrainerCallback):
                 top_k=30,
                 num_beams=5,
                 repetition_penalty=1.5,
-                no_repeat_ngram_size=9,
+                no_repeat_ngram_size=5,
                 do_sample=True,
             )
             generation_output = model.generate(
@@ -70,7 +70,7 @@ class MyCallback(TrainerCallback):
             print("Generated output: ", output)
 def train(
     # model/data params
-    base_model: str = "meta-llama/Llama-2-7b-chat-hf",  # the only required argument
+    base_model: str = "FlagAlpha/Llama2-Chinese-7b-Chat",  # the only required argument
     data_path: str = "social_opinion_zhihu_clean.json",
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
@@ -152,10 +152,10 @@ def train(
     if len(wandb_log_model) > 0:
         os.environ["WANDB_LOG_MODEL"] = wandb_log_model
     bnb_config = BitsAndBytesConfig(
-        load_in_8bit=True,
-        bnb_8bit_use_double_quant=True,
-        bnb_8bit_quant_type="nf8",
-        bnb_8bit_compute_dtype=torch.bfloat16
+        load_in_4bit=True,
+        bnb_4bit_use_double_quant=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16
     )
     model = LlamaForCausalLM.from_pretrained(
         base_model,
