@@ -32,7 +32,7 @@ class MyCallback(TrainerCallback):
         self.tokenizer = tokenizer
         self._trainer = trainer
     def on_step_end(self, args, state, control, **kwargs):
-        if state.global_step % 10 == 0:
+        if state.global_step % 100 == 0:
             #print the current learning rate
             print("Current learning rate: ", self._trainer.lr_scheduler.get_last_lr())
             #generate the predicted output of the model and print it
@@ -59,7 +59,7 @@ class MyCallback(TrainerCallback):
                 generation_config=generation_config,
                 return_dict_in_generate=True,
                 output_scores=True,
-                max_new_tokens=256,
+                max_new_tokens=400,
             )
             s = generation_output.sequences[0]
             output = tokenizer.decode(s)
