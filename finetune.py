@@ -75,7 +75,7 @@ def train(
     output_dir: str = "/data/junyu/lora-zhihu",
     # training hyperparams
     batch_size: int = 32,
-    micro_batch_size: int = 4,
+    micro_batch_size: int = 32,
     num_epochs: int = 2,
     learning_rate: float = 3e-4,
     cutoff_len: int = 400,
@@ -159,7 +159,7 @@ def train(
     )
     model = LlamaForCausalLM.from_pretrained(
         base_model,
-        #quantization_config=bnb_config,
+        quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
         device_map=device_map,
         cache_dir="./cache/",
@@ -309,7 +309,7 @@ def train(
             logging_steps=10,
             warmup_steps=100,
             bf16=True,
-            optim="adamw_torch",
+            optim="paged_adamw_32bit",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
             eval_steps=200 if val_set_size > 0 else None,
