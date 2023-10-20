@@ -55,7 +55,7 @@ class MyCallback(TrainerCallback):
                 top_k=30,
                 num_beams=5,
                 repetition_penalty=1.5,
-                no_repeat_ngram_size=5,
+                no_repeat_ngram_size=9,
                 do_sample=True,
             )
             generation_output = model.generate(
