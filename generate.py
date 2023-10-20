@@ -104,6 +104,7 @@ def main(
             top_p=top_p,
             top_k=top_k,
             num_beams=num_beams,
+            do_sample=True,
             **kwargs,
         )
 
