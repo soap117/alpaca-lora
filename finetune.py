@@ -55,14 +55,13 @@ class MyCallback(TrainerCallback):
                 num_beams=2,
                 **kwargs,
             )
-            with torch.no_grad():
-                generation_output = model.generate(
-                    input_ids=input_ids,
-                    generation_config=generation_config,
-                    return_dict_in_generate=True,
-                    output_scores=True,
-                    max_new_tokens=400,
-                )
+            generation_output = model.generate(
+                input_ids=input_ids,
+                generation_config=generation_config,
+                return_dict_in_generate=True,
+                output_scores=True,
+                max_new_tokens=400,
+            )
             s = generation_output.sequences[0]
             output = tokenizer.decode(s)
             print("Generated output: ", output)
@@ -310,8 +309,8 @@ def train(
             optim="adamw_torch",
             evaluation_strategy="steps" if val_set_size > 0 else "no",
             save_strategy="steps",
-            eval_steps=100 if val_set_size > 0 else None,
-            save_steps=100,
+            eval_steps=10 if val_set_size > 0 else None,
+            save_steps=10,
             output_dir=output_dir,
             save_total_limit=3,
             load_best_model_at_end=True if val_set_size > 0 else False,
