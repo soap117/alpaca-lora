@@ -105,6 +105,8 @@ def main(
             top_k=top_k,
             num_beams=num_beams,
             do_sample=True,
+            repetition_penalty=1.5,
+            no_repeat_ngram_size=5,
             **kwargs,
         )
 
